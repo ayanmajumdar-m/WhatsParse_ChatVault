@@ -1,36 +1,84 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Chat Vault
 
-## Getting Started
+A compact, privacy-first chat viewer and importer built with Next.js (App Router) and TypeScript. It supports importing chat transcripts (including ZIP archives with media), virtualized chat rendering for large conversations, and offline storage via IndexedDB.
 
-First, run the development server:
+**Key features:**
+
+- **Import**: Upload plain text or ZIP archives containing chat exports and media.
+- **Virtualized chat**: Smooth scrolling for large histories using `react-window`.
+- **Offline storage**: Persist chats and media with an IndexedDB wrapper.
+- **Media support**: Images, audio and video attachments are indexed and served from local storage.
+- **Project graph**: `graphify` outputs are available under `graphify-out/`.
+
+## Quick start
+
+Prerequisites: Node.js 18+ and a package manager (`npm`, `pnpm`, or `yarn`).
+
+1. Install dependencies:
+
+```bash
+npm install
+# or
+pnpm install
+```
+
+2. Run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+3. Open http://localhost:3000 in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- `npm run dev` — Start Next.js in development mode.
+- `npm run build` — Build for production.
+- `npm run start` — Run the production build.
 
-## Learn More
+## Project layout (high level)
 
-To learn more about Next.js, take a look at the following resources:
+- [app/](app/) — Next.js App Router entrypoints and global layout.
+- [src/components/](src/components/) — React components (chat UI, layout, media viewers).
+- [src/parser/](src/parser/) — Import and parsing utilities (`parser.ts`).
+- [src/stores/](src/stores/) — Zustand store and actions for chats.
+- [src/services/](src/services/) — IndexedDB and media helpers (`db.ts`, `audioManager.ts`).
+- [graphify-out/](graphify-out/) — Generated code graph and `GRAPH_REPORT.md` (created by `graphify`).
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Importing chats
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Use the Upload control in the sidebar to add chat exports. The importer will:
 
-## Deploy on Vercel
+- Prefer `.txt` transcripts inside ZIPs, decode common encodings and strip BOMs.
+- Extract referenced media files from ZIPs and persist them in IndexedDB.
+- Skip saving empty or invalid imports and report parsing errors in the UI.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+If an imported chat doesn't appear: inspect the browser DevTools console and check IndexedDB entries via the `dbService` helpers.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Graph & analysis
+
+This repository includes code-graph outputs produced by `graphify` in `graphify-out/` (see `GRAPH_REPORT.md`). To re-run locally:
+
+```bash
+pip install graphifyy
+graphify update .
+```
+
+Set an LLM API key (e.g., `GEMINI_API_KEY`) to enable semantic extraction.
+
+## Development notes
+
+- UI virtualization fixes rely on container CSS (`min-h-0`) — see `src/components/layout/ChatLayout.tsx` and `src/components/chat/ChatContainer.tsx`.
+- Mobile optimizations include responsive paddings and viewport meta in `app/layout.tsx`.
+
+## Contributing
+
+Contributions are welcome. Please open issues for bugs or feature requests, and submit PRs with focused changes. Keep changes small and include a brief description and testing notes.
+
+## License
+
+This project is provided without an explicit license. Add a `LICENSE` file to define terms for reuse.
+
+---
+
+If you'd like, I can also add a short `CONTRIBUTING.md`, a `LICENSE`, or tailor the README for publishing to GitHub (badges, CI, release notes). 

@@ -9,9 +9,15 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "dayjs": "^1.11.20",
+    "jszip": "^3.10.1",
+    "lucide-react": "^1.16.0",
     "next": "16.2.6",
     "react": "19.2.4",
-    "react-dom": "19.2.4"
+    "react-dom": "19.2.4",
+    "react-window": "^2.2.7",
+    "wavesurfer.js": "^7.12.7",
+    "zustand": "^5.0.13"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

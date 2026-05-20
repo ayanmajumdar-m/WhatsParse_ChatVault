@@ -39,3 +39,28 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# graphify outputs and temporary build files
+/graphify-out/
+.graphify_build_code_graph.py
+.graphify_detect.json
+.graphify_ast.json
+.graphify_extract.json
+.graphify_analysis.json
+.graphify_python/
+graphify_build.log
+graphify_extract.log
+graphify_run.log
+graphify_*.log
+
+# IDE and editor folders
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# OS thumbnails and misc
+Thumbs.db
+ehthumbs.db
