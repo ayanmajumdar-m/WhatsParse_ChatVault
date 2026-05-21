@@ -81,4 +81,4 @@ This project is provided without an explicit license. Add a `LICENSE` file to de
 
 ---
 
-If you'd like, I can also add a short `CONTRIBUTING.md`, a `LICENSE`, or tailor the README for publishing to GitHub (badges, CI, release notes). 
+The repository includes complete documentation, MIT License, CONTRIBUTING guidelines, CLAUDE.md, and AGENTS.md for structured development and AI-assisted workflows.

@@ -106,4 +106,4 @@ Revision history
 
 ---
 
-If you'd like, I can also generate a `CONTRIBUTING.md` and `.github/` PR templates that follow these rules. 
+
