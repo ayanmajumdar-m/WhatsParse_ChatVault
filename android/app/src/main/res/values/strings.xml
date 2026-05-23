@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">ChatVault</string>
+    <string name="title_activity_main">ChatVault</string>
+    <string name="package_name">com.ayan.chatvault</string>
+    <string name="custom_url_scheme">com.ayan.chatvault</string>
+</resources>

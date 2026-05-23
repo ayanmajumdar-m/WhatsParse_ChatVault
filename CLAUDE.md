@@ -62,6 +62,7 @@ Files to inspect for common tasks
 - Parsing: `src/parser/parser.ts`
 - Store & persistence: `src/stores/chatStore.ts`, `src/services/db.ts`
 - Layout: `src/components/layout/ChatLayout.tsx`, `app/layout.tsx`
+- Android playback: `src/services/audioManager.ts`, `src/services/nativeAudio.ts`
 
 Known gotchas & guardrails
 --------------------------
@@ -70,6 +71,8 @@ Known gotchas & guardrails
 - Tailwind class names: project expects standard Tailwind utilities — do not rename or invent custom utilities in code without updating config.
 - IndexedDB persistence: database schema is simple but versioned externally; any changes to `db.ts` require a migration plan.
 - Large ZIP files: the importer extracts media into IndexedDB; be mindful of memory usage when parsing very large archives.
+- Android audio playback prefers native Capacitor support when available, then falls back to HTMLAudio and WebAudio. Keep all three paths in sync when changing playback behavior.
+- If a device emits a Next.js dev origin warning, update `allowedDevOrigins` in `next.config.ts` for local development.
 
 What the assistant must never do without explicit human approval
 -------------------------------------------------------------

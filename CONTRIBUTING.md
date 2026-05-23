@@ -14,6 +14,24 @@ npm install
 npm run dev
 ```
 
+Android / Capacitor workflow
+----------------------------
+- When changing UI, audio, or parsing code, rebuild the static export and refresh the Android app assets:
+
+```bash
+npm run build
+npx cap copy android
+```
+
+- To inspect the native app shell locally, open the Android project in Android Studio:
+
+```bash
+npx cap open android
+```
+- Keep Android changes compatible with the offline architecture: client components only, no server actions, no API routes, and no backend dependencies for chat rendering or playback.
+- Android playback currently prefers a native Capacitor bridge, then falls back to HTMLAudio and WebAudio. When modifying audio code, verify all three paths still behave correctly on device.
+- If the WebView warns about blocked dev resources, add the device host to `allowedDevOrigins` in `next.config.ts` for local development and restart the dev server.
+
 Reporting bugs
 --------------
 - Open an issue with a clear title and reproduction steps. Include console errors, screenshots, and the steps you followed.
@@ -51,6 +69,7 @@ Testing and validation
 ----------------------
 - Unit tests: `npm test` (project may not include a test runner by default; add coverage when modifying core logic).
 - Manual QA: run `npm run dev`, exercise the Upload flow, import sample ZIPs, and validate chat rendering and persistence.
+- Android QA: run `npm run build`, then `npx cap copy android`, and verify import, chat scrolling, audio playback switching, and fallback behavior in Android Studio or on-device WebView.
 
 Running repository analysis
 --------------------------

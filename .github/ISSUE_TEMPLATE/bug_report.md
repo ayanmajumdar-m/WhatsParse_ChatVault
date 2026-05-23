@@ -28,6 +28,13 @@ If applicable, add screenshots to help explain your problem.
  - Browser [e.g. chrome, safari]
  - Version [e.g. 22]
 
+**Android / WebView (if relevant):**
+ - Device / emulator: [e.g. Pixel 7, Android Emulator]
+ - Android version: [e.g. 14]
+ - WebView / Chrome version: [e.g. 125]
+ - Capacitor build or dev mode: [e.g. `npx cap open android` / browser dev]
+ - Console or logcat output: [paste here]
+
 **Smartphone (please complete the following information):**
  - Device: [e.g. iPhone6]
  - OS: [e.g. iOS8.1]
@@ -36,3 +43,5 @@ If applicable, add screenshots to help explain your problem.
 
 **Additional context**
 Add any other context about the problem here.
+
+If the issue is related to import, playback, or offline behavior, please mention whether it happens in the browser, Android WebView, or both.

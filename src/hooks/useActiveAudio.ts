@@ -1,16 +1,22 @@
-import { useEffect, useState } from "react";
-import { audioManager } from "../services/audioManager";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { audioManager } from "@/services/audioManager";
 import { useChatStore } from "../stores/chatStore";
 
 export function useActiveAudio(messageId: string, filename: string) {
   const getMediaUrl = useChatStore((state) => state.getMediaUrl);
+  const playRequestRef = useRef(0);
+  const audioSnapshot = useSyncExternalStore(
+    (listener) => audioManager.subscribe(listener),
+    () => audioManager.getActiveMessageId(),
+    () => null
+  );
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [speed, setSpeed] = useState(1);
   const [isLoaded, setIsLoaded] = useState(false);
 
-  const isCurrentActive = audioManager.getActiveMessageId() === messageId;
+  const isCurrentActive = audioSnapshot === messageId;
 
   // Initialize status on mount/active check
   useEffect(() => {
@@ -25,16 +31,16 @@ export function useActiveAudio(messageId: string, filename: string) {
   }, [isCurrentActive]);
 
   const handlePlay = async () => {
+    const playRequestId = ++playRequestRef.current;
+
     try {
       const url = await getMediaUrl(filename);
-      if (!url) return;
+      if (!url || playRequestId !== playRequestRef.current) return false;
 
-      setIsPlaying(true);
-      
       await audioManager.play(
         messageId,
         url,
-        (time) => {
+        (time: number) => {
           setCurrentTime(time);
           if (duration === 0) {
             setDuration(audioManager.getDuration());
@@ -46,15 +52,21 @@ export function useActiveAudio(messageId: string, filename: string) {
         }
       );
 
+      if (playRequestId !== playRequestRef.current) return false;
+
       setDuration(audioManager.getDuration() || 0);
       setIsLoaded(true);
+      setIsPlaying(true);
+      return true;
     } catch (err) {
       console.error("Failed to play voice note", err);
       setIsPlaying(false);
+      return false;
     }
   };
 
   const handlePause = () => {
+    playRequestRef.current++;
     audioManager.pause();
     setIsPlaying(false);
   };

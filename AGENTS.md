@@ -41,6 +41,8 @@ Allowed file areas for automated edits
 - `README.md`, `CLAUDE.md`, `AGENTS.md`, `CONTRIBUTING.md` — docs edits allowed.
 - `graphify-out/` — analysis outputs may be written by `Graph` agents.
 
+Documentation should stay aligned with the current Android workflow: static export to `out/`, Capacitor sync into `android/`, and the Android audio stack that prefers native playback with HTMLAudio/WebAudio fallbacks.
+
 Restricted areas (require human approval)
 --------------------------------------
 - Any change to `src/services/db.ts` that modifies IndexedDB schema or versioning.

@@ -78,7 +78,7 @@ export default function DocumentBubble({ message, showSender }: DocumentBubblePr
     <div
       className={`group relative flex flex-col rounded-2xl p-3 max-w-[85%] sm:max-w-[65%] shadow-sm ${
         message.isMine
-          ? "self-end bg-gradient-to-br from-indigo-500 to-indigo-600 text-white rounded-tr-none"
+          ? "self-end bg-linear-to-br from-indigo-500 to-indigo-600 text-white rounded-tr-none"
           : "self-start bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 border border-slate-100 dark:border-slate-700/40 rounded-tl-none"
       }`}
     >
@@ -102,7 +102,7 @@ export default function DocumentBubble({ message, showSender }: DocumentBubblePr
             : "bg-indigo-50 border-indigo-100 text-indigo-600 dark:bg-indigo-950/40 dark:border-indigo-900/40 dark:text-indigo-400"
         }`}>
           <File className="h-5 w-5" />
-          <span className="text-[7px] font-bold tracking-wider uppercase leading-none mt-0.5 max-w-[28px] truncate">
+          <span className="text-[7px] font-bold tracking-wider uppercase leading-none mt-0.5 max-w-7 truncate">
             {fileExtension}
           </span>
         </div>

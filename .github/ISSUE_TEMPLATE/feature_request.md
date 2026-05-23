@@ -18,3 +18,5 @@ A clear and concise description of any alternative solutions or features you've 
 
 **Additional context**
 Add any other context or screenshots about the feature request here.
+
+If the request affects Android, offline use, media playback, or import/export flows, please describe the target platform and any compatibility constraints.

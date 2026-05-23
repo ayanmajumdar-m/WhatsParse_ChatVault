@@ -62,9 +62,11 @@ export default function ChatLayout() {
   );
 
   const handleImportClick = () => {
-    if (!selectedChatId) {
-      setShowImportPanel(true);
+    if (selectedChatId) {
+      useChatStore.getState().selectChat("");
     }
+
+    setShowImportPanel(true);
   };
 
   useEffect(() => {

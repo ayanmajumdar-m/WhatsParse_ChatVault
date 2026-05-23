@@ -1,9 +1,10 @@
 "use client";
 
 import { Mic, Pause, Play } from "lucide-react";
-import { useEffect, useRef, useState, useMemo } from "react";
-import { useActiveAudio } from "../../hooks/useActiveAudio";
-import { audioManager } from "../../services/audioManager";
+import { useEffect, useMemo, useRef } from "react";
+import { useActiveAudio } from "@/hooks/useActiveAudio";
+import { audioManager } from "@/services/audioManager";
+import { nativeAudio } from "@/services/nativeAudio";
 import { ChatMessage } from "../../types";
 
 interface AudioBubbleProps {
@@ -21,7 +22,7 @@ function formatTime(seconds: number): string {
 
 export default function AudioBubble({ message, showSender }: AudioBubbleProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [wavesurferInstance, setWavesurferInstance] = useState<any | null>(null);
+  const wavesurferRef = useRef<any | null>(null);
 
   const {
     isCurrentActive,
@@ -42,23 +43,42 @@ export default function AudioBubble({ message, showSender }: AudioBubbleProps) {
 
   // Instantiate WaveSurfer ONLY when this voice note is active
   useEffect(() => {
+    let cancelled = false;
+
+    const destroyWaveSurfer = () => {
+      if (wavesurferRef.current) {
+        try {
+          wavesurferRef.current.destroy();
+        } catch (err) {
+          console.warn("Failed to destroy WaveSurfer instance", err);
+        }
+        wavesurferRef.current = null;
+      }
+    };
+
+    destroyWaveSurfer();
+
     if (!isCurrentActive || !containerRef.current) {
-      setWavesurferInstance(null);
       return;
     }
 
-    const nativeAudio = audioManager.getAudioElement();
-    if (!nativeAudio) return;
+    // If a native plugin is active on Android then we cannot attach
+    // WaveSurfer to a native player — fall back to static placeholder.
+    const isAndroid = typeof navigator !== "undefined" && /Android/i.test(navigator.userAgent || "");
+    if (isAndroid && nativeAudio.isAvailable()) {
+      return;
+    }
 
-    let ws: any = null;
+    const nativeAudioElem = audioManager.getAudioElement();
+    if (!nativeAudioElem) return;
 
     // Load wavesurfer dynamically on client side
     import("wavesurfer.js").then(({ default: WaveSurfer }) => {
-      if (!containerRef.current) return;
+      if (cancelled || !containerRef.current) return;
 
-      ws = WaveSurfer.create({
+      const ws = WaveSurfer.create({
         container: containerRef.current,
-        media: nativeAudio,
+        media: nativeAudioElem,
         waveColor: message.isMine ? "rgba(255, 255, 255, 0.4)" : "#cbd5e1",
         progressColor: message.isMine ? "#ffffff" : "#4f46e5",
         height: 28,
@@ -68,13 +88,17 @@ export default function AudioBubble({ message, showSender }: AudioBubbleProps) {
         cursorWidth: 0,
       });
 
-      setWavesurferInstance(ws);
+      if (cancelled) {
+        ws.destroy();
+        return;
+      }
+
+      wavesurferRef.current = ws;
     });
 
     return () => {
-      if (ws) {
-        ws.destroy();
-      }
+      cancelled = true;
+      destroyWaveSurfer();
     };
   }, [isCurrentActive, message.isMine]);
 
@@ -82,7 +106,7 @@ export default function AudioBubble({ message, showSender }: AudioBubbleProps) {
     <div
       className={`group relative flex flex-col rounded-2xl p-3.5 max-w-[85%] sm:max-w-[70%] shadow-sm ${
         message.isMine
-          ? "self-end bg-gradient-to-br from-indigo-500 to-indigo-600 text-white rounded-tr-none"
+          ? "self-end bg-linear-to-br from-indigo-500 to-indigo-600 text-white rounded-tr-none"
           : "self-start bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 border border-slate-100 dark:border-slate-700/40 rounded-tl-none"
       }`}
     >
@@ -114,7 +138,7 @@ export default function AudioBubble({ message, showSender }: AudioBubbleProps) {
         {/* Audio Details & Waveform Container */}
         <div className="flex flex-1 flex-col min-w-0">
           {/* Waveform area */}
-          <div className="relative h-7 flex items-center min-w-[120px] sm:min-w-[180px]">
+          <div className="relative flex h-7 items-center min-w-30 sm:min-w-45">
             {isCurrentActive ? (
               // Active WaveSurfer container
               <div ref={containerRef} className="w-full" />
@@ -127,7 +151,7 @@ export default function AudioBubble({ message, showSender }: AudioBubbleProps) {
                   return (
                     <div
                       key={idx}
-                      className={`h-4 w-[2px] rounded-full ${
+                      className={`h-4 w-0.5 rounded-full ${
                         message.isMine ? "bg-indigo-300/40" : "bg-slate-200"
                       }`}
                       style={{ height: `${h}px` }}

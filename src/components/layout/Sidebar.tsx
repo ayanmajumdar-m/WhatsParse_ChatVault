@@ -29,6 +29,7 @@ export default function Sidebar({ onImportClick }: SidebarProps) {
         </div>
 
         <button
+          type="button"
           onClick={onImportClick}
           className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 hover:bg-indigo-100 dark:bg-indigo-950/40 dark:text-indigo-400 dark:hover:bg-indigo-900/40 transition-colors duration-200"
           title="Import exported chat"
@@ -50,6 +51,7 @@ export default function Sidebar({ onImportClick }: SidebarProps) {
               No chat logs imported yet.
             </p>
             <button
+              type="button"
               onClick={onImportClick}
               className="mt-4 flex items-center gap-1.5 rounded-lg bg-indigo-600 px-3.5 py-2 text-xs font-semibold text-white shadow-md shadow-indigo-500/10 hover:bg-indigo-500 transition-colors duration-200"
             >
